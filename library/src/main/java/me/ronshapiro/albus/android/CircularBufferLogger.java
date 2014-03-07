@@ -4,6 +4,7 @@ public class CircularBufferLogger extends AbstractLogger {
 
     private final String[] buffer;
     private int index = 0;
+    private int size = 0;
 
     public CircularBufferLogger() {
         this(200);
@@ -18,6 +19,9 @@ public class CircularBufferLogger extends AbstractLogger {
         synchronized (this) {
             buffer[index] = fullLogLine;
             index = increment(index);
+            if (size < buffer.length) {
+                size++;
+            }
         }
     }
 
@@ -26,7 +30,7 @@ public class CircularBufferLogger extends AbstractLogger {
         synchronized (this) {
             StringBuilder builder = new StringBuilder();
             int iterator = index;
-            for (int i = 0; i < buffer.length; i++) {
+            for (int i = 0; i < buffer.length && i < size; i++) {
                 builder.append(buffer[iterator]).append('\n');
                 iterator = increment(iterator);
             }

@@ -9,6 +9,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.ronshapiro.albus.android.TestsHelper.mockModule;
 import static me.ronshapiro.albus.android.TestsHelper.simulateCrash;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -28,7 +29,7 @@ public class AlbusTests extends AndroidTestCase {
 
     public void testCrashWritesToModule() {
         Albus testAlbus = new Albus(new MapStorage(new HashMap<Long, JSONObject>()));
-        Module module = mock(Module.class);
+        Module module = mockModule();
         testAlbus.addModule(module);
 
         Albus.start(testAlbus);
@@ -39,8 +40,8 @@ public class AlbusTests extends AndroidTestCase {
 
     public void testCanAddMultipleModules() {
         Albus testAlbus = new Albus(new MapStorage(new HashMap<Long, JSONObject>()));
-        Module m1 = mock(Module.class);
-        Module m2 = mock(Module.class);
+        Module m1 = mockModule();
+        Module m2 = mockModule();
         testAlbus.addModule(m1);
         testAlbus.addModule(m2);
         Albus.start(testAlbus);
@@ -82,9 +83,9 @@ public class AlbusTests extends AndroidTestCase {
         assertNotSame(map.get(1l), map.get(2l));
     }
 
-    public void testMultipleModulesGetSavedTogether() {
-        Module m1 = mock(Module.class);
-        Module m2 = mock(Module.class);
+    public void testMultipleModulesGetSavedTogether() throws JSONException {
+        Module m1 = mockModule();
+        Module m2 = mockModule();
         when(m1.getName()).thenReturn("test.m1");
         when(m2.getName()).thenReturn("test.m2");
         Thread thread = Thread.currentThread();
@@ -103,8 +104,11 @@ public class AlbusTests extends AndroidTestCase {
         Albus.start(testAlbus);
 
         simulateCrash(throwable);
-        assertEquals("{\"test.m1\":{\"a\":\"b\"},\"test.m2\":{\"c\":\"d\"}}",
-                storage.read(storage.getNewestId()).toString());
+        JSONObject storedData = storage.read(storage.getNewestId());
+        assertTrue(storedData.has("test.m1"));
+        assertEquals("{\"a\":\"b\"}", storedData.optString("test.m1"));
+        assertTrue(storedData.has("test.m2"));
+        assertEquals("{\"c\":\"d\"}", storedData.optString("test.m2"));
     }
 
     public void testLoggerDataGetsAddedToStorage() {
