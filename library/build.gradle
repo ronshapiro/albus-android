@@ -22,5 +22,6 @@ repositories {
 
 dependencies {
     instrumentTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
+    instrumentTestCompile  'org.easytesting:fest-assert-core:2.+'
     //instrumentTestCompile 'org.mockito:mockito-all:1.9.5'
 }

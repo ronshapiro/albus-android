@@ -9,8 +9,6 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.ronshapiro.albus.android.Albus.Module;
-
 import static me.ronshapiro.albus.android.TestsHelper.simulateCrash;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -66,7 +64,7 @@ public class AlbusTests extends AndroidTestCase {
             public JSONObject record(Thread thread, Throwable throwable) {
                 try {
                     return new JSONObject().put("thread", thread.toString())
-                                           .put("throwable", throwable);
+                            .put("throwable", throwable);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -107,6 +105,10 @@ public class AlbusTests extends AndroidTestCase {
         simulateCrash(throwable);
         assertEquals("{\"test.m1\":{\"a\":\"b\"},\"test.m2\":{\"c\":\"d\"}}",
                 storage.read(storage.getNewestId()).toString());
+    }
+
+    public void testLoggerDataGetsAddedToStorage() {
+
     }
 
     public void testPreviousExceptionHandlerIsCalled() {

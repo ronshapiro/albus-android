@@ -15,8 +15,6 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-import me.ronshapiro.albus.android.Albus.Module;
-
 public class MainStatsModule implements Module {
 
     private static final int MODULE_VERSION = 1;
@@ -66,9 +64,9 @@ public class MainStatsModule implements Module {
             for (StackTraceElement element : entry.getValue()) {
                 JSONObject stackTraceLine = new JSONObject();
                 stackTraceLine.put("class", element.getClassName())
-                              .put("method_name", element.getMethodName())
-                              .put("file_name", element.getMethodName())
-                              .put("line_number", element.getLineNumber());
+                        .put("method_name", element.getMethodName())
+                        .put("file_name", element.getMethodName())
+                        .put("line_number", element.getLineNumber());
                 threadData.accumulate("stack_trace", stackTraceLine);
             }
             threads.put(threadData);
@@ -97,7 +95,7 @@ public class MainStatsModule implements Module {
         deviceData.put("manufacturer", Build.MANUFACTURER); // may be unnecessary
         deviceData.put("rooted", isRooted());
         boolean isLandscape = context.getResources().getConfiguration().orientation ==
-                              Configuration.ORIENTATION_LANDSCAPE;
+                Configuration.ORIENTATION_LANDSCAPE;
         deviceData.put("is_landscape", isLandscape);
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         deviceData.put("screen_on", pm.isScreenOn());

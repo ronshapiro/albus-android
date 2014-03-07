@@ -2,13 +2,11 @@ package me.ronshapiro.albus.android;
 
 import org.json.JSONObject;
 
-import java.util.Map;
-
 /**
  * An interface to abstract the storage mechanism of data that will later be sent to the Albus
  * server.
  */
-interface Storage {
+public interface Storage {
 
     /**
      * Serializes report data to later be retrieved when it is ready to be sent to the server.

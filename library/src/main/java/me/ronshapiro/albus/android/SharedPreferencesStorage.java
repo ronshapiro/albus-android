@@ -20,9 +20,9 @@ public class SharedPreferencesStorage implements Storage {
     @Override
     public void write(long id, JSONObject json) {
         sharedPreferences.edit()
-                         .putString(idToKey(id), json.toString())
-                         .putLong(KEY_NEWEST_ID, id)
-                         .commit();
+                .putString(idToKey(id), json.toString())
+                .putLong(KEY_NEWEST_ID, id)
+                .commit();
     }
 
     @Override
@@ -38,9 +38,9 @@ public class SharedPreferencesStorage implements Storage {
     @Override
     public void purge(long id) {
         sharedPreferences.edit()
-                         .remove(idToKey(id))
-                         .putLong(KEY_OLDEST_ID, id + 1)
-                         .commit();
+                .remove(idToKey(id))
+                .putLong(KEY_OLDEST_ID, id + 1)
+                .commit();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SharedPreferencesStorage implements Storage {
 
     @Override
     public long getNewestId() {
-        return sharedPreferences.getLong(KEY_OLDEST_ID, 0l);
+        return sharedPreferences.getLong(KEY_NEWEST_ID, 0l);
     }
 
     private String idToKey(long id) {

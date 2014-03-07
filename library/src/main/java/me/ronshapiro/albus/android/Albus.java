@@ -2,11 +2,8 @@ package me.ronshapiro.albus.android;
 
 import android.content.Context;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedList;
 
 public final class Albus {
 
@@ -14,7 +11,9 @@ public final class Albus {
     private static boolean suppressDefaultExceptionHandler = false;
     private static Albus INSTANCE;
     private final Storage storage;
-    private List<Module> modules;
+    private final Logger logger;
+    private Collection<Module> modules;
+    private Collection<AlbusLifecycleListener> listeners;
 
     public static synchronized Albus get() {
         return INSTANCE;
@@ -41,6 +40,9 @@ public final class Albus {
 
     private static void start() {
         Thread.setDefaultUncaughtExceptionHandler(new AlbusExceptionHandler());
+        for (AlbusLifecycleListener listener : INSTANCE.listeners) {
+            listener.onAlbusStarted(INSTANCE.storage);
+        }
     }
 
     public static void suppressDefaultExceptionHandler(boolean suppress) {
@@ -52,8 +54,14 @@ public final class Albus {
     }
 
     public Albus(Storage storage) {
+        this(storage, new CircularBufferLogger());
+    }
+
+    public Albus(Storage storage, Logger logger) {
         this.storage = storage;
-        modules = new ArrayList<Module>();
+        this.logger = logger;
+        modules = new LinkedList<Module>();
+        listeners = new LinkedList<AlbusLifecycleListener>();
     }
 
     /**
@@ -65,6 +73,10 @@ public final class Albus {
     }
 
     public void addModule(Module module) {
+        if (module.getName() == null) {
+            throw new IllegalArgumentException(
+                    "Module [" + module.getClass().getSimpleName() + "] name must not be null");
+        }
         modules.add(module);
     }
 
@@ -72,12 +84,19 @@ public final class Albus {
         return storage;
     }
 
-    public static interface Module {
-        /**
-         * @return an identifiable key for the module; this is used on the backend to determine what
-         * handler should process this data - it should be unique, like a package name.
-         */
-        String getName();
-        JSONObject record(Thread thread, Throwable throwable);
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void addLifecycleListener(AlbusLifecycleListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * don't expose {@link #listeners}; if the modules are needed at some point, make sure to clone
+     * the collection first.
+     */
+    /* package */ Collection<AlbusLifecycleListener> getListeners() {
+        return listeners;
     }
 }
