@@ -2,7 +2,7 @@ apply plugin: 'android-library'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.1"
+    buildToolsVersion "19.0.3"
 
     defaultConfig {
         minSdkVersion 8
@@ -11,11 +11,12 @@ android {
         versionName "1.0"
     }
 
-    release {
-        runProguard false
-        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
     }
-
 }
 
 repositories {
@@ -23,7 +24,8 @@ repositories {
 }
 
 dependencies {
-    instrumentTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
-    instrumentTestCompile  'org.easytesting:fest-assert-core:2.+'
-    //instrumentTestCompile 'org.mockito:mockito-all:1.9.5'
+    compile 'com.squareup.okhttp:okhttp:1.5.+'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
+    androidTestCompile 'org.easytesting:fest-assert-core:2.+'
+    //androidTestCompile 'org.mockito:mockito-all:1.9.5'
 }

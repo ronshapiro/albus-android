@@ -5,15 +5,20 @@ import android.content.Context;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import me.ronshapiro.albus.android.api.AlbusApiClient;
+
 public final class Albus {
 
     private static final String DEFAULT_STORAGE_FILE = "default-albus-storage";
     private static boolean suppressDefaultExceptionHandler = false;
     private static Albus INSTANCE;
+
     private final Storage storage;
     private final Logger logger;
-    private Collection<Module> modules;
-    private Collection<AlbusLifecycleListener> listeners;
+
+    private final AlbusApiClient mApiClient;
+    private final Collection<Module> modules;
+    private final Collection<AlbusLifecycleListener> listeners;
 
     public static synchronized Albus get() {
         return INSTANCE;
@@ -23,10 +28,15 @@ public final class Albus {
         INSTANCE = dumbledore;
     }
 
+    /**
+     * Default entry point for starting Albus. No customization is done.
+     * @param context
+     */
     public static void start(Context context) {
         Albus dumbledore = new Albus(new SharedPreferencesStorage(context, DEFAULT_STORAGE_FILE));
         dumbledore.addModule(new MainStatsModule(context));
         set(dumbledore);
+        dumbledore.addLifecycleListener(new PostDataImmediatelyListener(context));
         start();
     }
 
@@ -62,6 +72,7 @@ public final class Albus {
         this.logger = logger;
         modules = new LinkedList<Module>();
         listeners = new LinkedList<AlbusLifecycleListener>();
+        mApiClient = new AlbusApiClient();
     }
 
     /**
@@ -86,6 +97,10 @@ public final class Albus {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public AlbusApiClient getApiClient() {
+        return mApiClient;
     }
 
     public void addLifecycleListener(AlbusLifecycleListener listener) {

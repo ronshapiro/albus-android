@@ -17,17 +17,20 @@ public class AlbusService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("Ronservice", "command");
         super.onStartCommand(intent, flags, startId);
         new Thread(){
             @Override
             public void run() {
+                /*
                 Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new Runnable() {
                     @Override
                     public void run() {
                         Log.d("Ronservice", "running");
                     }
                 }, 1, 100, TimeUnit.MILLISECONDS);
+                */
+                Albus dumbledore = Albus.get();
+                dumbledore.getApiClient().postDataAsync(dumbledore.getStorage());
             }
         }.start();
         return START_STICKY;
