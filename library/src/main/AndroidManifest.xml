@@ -5,8 +5,8 @@
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher">
 
+
         <service android:name="me.ronshapiro.albus.android.AlbusService"
-            android:isolatedProcess="true"
             android:process=":albuscrashproc" />
 
     </application>

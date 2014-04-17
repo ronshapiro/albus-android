@@ -3,10 +3,7 @@ package me.ronshapiro.albus.android;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.zip.GZIPOutputStream;
 
 /* package */ class AlbusExceptionHandler implements UncaughtExceptionHandler {
 
@@ -46,5 +43,4 @@ import java.util.zip.GZIPOutputStream;
             previousUncaughtExceptionHandler.uncaughtException(thread, throwable);
         }
     }
-
 }

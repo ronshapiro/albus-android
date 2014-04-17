@@ -1,38 +1,32 @@
 package me.ronshapiro.albus.android;
 
-import android.app.Service;
+import android.app.IntentService;
 import android.content.Intent;
-import android.os.IBinder;
 import android.util.Log;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
-public class AlbusService extends Service {
+import static me.ronshapiro.albus.android.BuildConfig.DEBUG;
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+public class AlbusService extends IntentService {
+
+    private static final String TAG = AlbusService.class.getSimpleName();
+
+    public AlbusService() {
+        super(TAG);
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        new Thread(){
-            @Override
-            public void run() {
-                /*
-                Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("Ronservice", "running");
-                    }
-                }, 1, 100, TimeUnit.MILLISECONDS);
-                */
-                Albus dumbledore = Albus.get();
-                dumbledore.getApiClient().postDataAsync(dumbledore.getStorage());
-            }
-        }.start();
-        return START_STICKY;
+    protected void onHandleIntent(Intent intent) {
+        Albus dumbledore = Albus.get();
+
+        try {
+            dumbledore.getApiClient().postDataAsync(dumbledore.getStorage()).get();
+        } catch (InterruptedException e) {
+            if (DEBUG) Log.e(TAG, "error occurred in postDataAsync:", e);
+        } catch (ExecutionException e) {
+            if (DEBUG) Log.e(TAG, "error occurred in postDataAsync:", e);
+        }
     }
+
 }

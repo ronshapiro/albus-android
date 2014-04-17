@@ -30,6 +30,7 @@ public final class Albus {
 
     /**
      * Default entry point for starting Albus. No customization is done.
+     *
      * @param context
      */
     public static void start(Context context) {
@@ -55,10 +56,20 @@ public final class Albus {
         }
     }
 
+    /**
+     * This should only be used on background threads. Rewrite {@link AlbusExceptionHandler}
+     * accordingly.
+     */
+    @Deprecated
     public static void suppressDefaultExceptionHandler(boolean suppress) {
         suppressDefaultExceptionHandler = suppress;
     }
 
+    /**
+     * This should only be used on background threads. Rewrite {@link AlbusExceptionHandler}
+     * accordingly.
+     */
+    @Deprecated
     public static boolean getShouldSuppressDefaultExceptionHandler() {
         return suppressDefaultExceptionHandler;
     }
